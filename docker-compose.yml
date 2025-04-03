@@ -19,7 +19,7 @@ services:
         image: nginx:alpine
         restart: unless-stopped
         ports:
-            - "80:80"
+            - "8989:80"
         volumes:
             - ./:/var/www
             - ./docker/nginx/:/etc/nginx/conf.d/
@@ -27,21 +27,21 @@ services:
         networks:
             - laravel-glicemia
 
-    # db mysql
-    # db:
-    #     image: mysql:8.0
-    #     restart: unless-stopped
-    #     environment:
-    #       MYSQL_DATABASE: ${DB_DATABASE:-glicemia}   # Usará o valor do .env ou 'glicemia' como padrão
-    #       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}   # Usará o valor do .env ou 'root' como padrão
-    #       MYSQL_PASSWORD: ${DB_PASSWORD:-userpass}    # Usará o valor do .env ou 'userpass' como padrão
-    #       MYSQL_USER: ${DB_USERNAME:-username}    
-    #     volumes:
-    #         - ./.docker/mysql/dbdata:/var/lib/mysql
-    #     ports:
-    #         - "3306:3306"
-    #     networks:
-    #         - laravel-glicemia
+    #db mysql
+    db:
+        image: mysql:8.0
+        restart: unless-stopped
+        environment:
+          MYSQL_DATABASE: ${DB_DATABASE:-glicemia}   # Usará o valor do .env ou 'glicemia' como padrão
+          MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}   # Usará o valor do .env ou 'root' como padrão
+          MYSQL_PASSWORD: ${DB_PASSWORD:-userpass}    # Usará o valor do .env ou 'userpass' como padrão
+          MYSQL_USER: ${DB_USERNAME:-username}    
+        volumes:
+            - ./.docker/mysql/dbdata:/var/lib/mysql
+        ports:
+            - "3388:3306"
+        networks:
+            - laravel-glicemia
 
     # queue
     queue:
