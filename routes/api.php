@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Http\Request;
 
 Route::post('/migrate', function (Request $request) {
-    $tokenRecebido = $request->header('X-MIGRATE-TOKEN');    
+    $tokenRecebido = $request->header('X-MIGRATE-TOKEN');
 
     $tokenEsperado = env('MIGRATE_SECRET');
 
@@ -53,7 +53,7 @@ Route::middleware([
             Route::withoutMiddleware('auth:sanctum')->group(function () {
                 Route::post('/register', [RegisterController::class, 'store'])->name('register');
                 Route::post('/login', 'login')->name('login');
-                Route::post('/send-link-reset-password', [ResetPasswordController::class, 'sendLinkResetPassword'])->name('send.link');             
+                Route::post('/send-link-reset-password', [ResetPasswordController::class, 'sendLinkResetPassword'])->name('send.link');
             });
 
             Route::get('/me', 'me')->name('me');
@@ -73,11 +73,11 @@ Route::middleware([
         ->group(function () {
             Route::resource('glucose-days', GlucoseDayController::class)->except(['create', 'edit']);
         });
-        
+
     /**Glucose */
     Route::prefix('v1')
         ->group(function () {
-            Route::resource('glucose', GlucoseController::class)->except(['create', 'edit', 'show', 'update']);        
+            Route::resource('glucose', GlucoseController::class)->except(['create', 'edit', 'show', 'update']);
             Route::get('/glucose/export', [GlucoseController::class, 'export'])->name('export');
         });
 
