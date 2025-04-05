@@ -4,6 +4,9 @@
     "scripts": {
         "dev": "vite"
     },
+    "engines": {
+        "node": "18.x"
+    },
     "devDependencies": {
         "autoprefixer": "^10.4.20",
         "axios": "^1.7.4",
