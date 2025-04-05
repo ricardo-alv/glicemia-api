@@ -67,7 +67,10 @@
 
 <body>
     <div class="header">
-        <img src="{{ public_path('images/unicornio.png') }}" class="logo" alt="logo" />
+        @if (isset($logoBase64))
+            <img src="{{ $logoBase64 }}" class="logo" alt="logo" />
+        @endif
+        {{-- <img src="{{ public_path('images/unicornio.png') }}" class="logo" alt="logo" /> --}}
         <strong style="font-size: 0.85rem">{{ config('app.name') }}</strong>
         <div class="title">MÊS {{ $currentMonthFormat }}</div>
     </div>

@@ -46,6 +46,14 @@ class GlucoseService
         $endDate = $this->carbon->parse($data['period_final']);
 
         $pdfContent = [];
+        $logoBase64 = null;
+        $imagePath = public_path('images/unicornio.png');
+
+        if (file_exists($imagePath)) {
+            $imageType = pathinfo($imagePath, PATHINFO_EXTENSION);
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $logoBase64 = "data:image/{$imageType};base64,{$imageData}";
+        }
 
         while ($startDate->lte($endDate)) {
             // Obtém o mês atual no formato 'Y-m'
@@ -74,7 +82,7 @@ class GlucoseService
                 });
 
                 // Adiciona os dados do mês ao conteúdo do PDF
-                $pdfContent[] = view('pdf.glucose', compact('groupedGlucoses', 'currentMonthFormat'))->render();
+                $pdfContent[] = view('pdf.glucose', compact('groupedGlucoses', 'currentMonthFormat','logoBase64'))->render();
             }
 
             // Avançar para o próximo mês
