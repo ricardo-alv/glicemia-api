@@ -30,7 +30,8 @@ class GlucoseReportJob implements ShouldQueue
      */
     public function handle(): void
     {       
-        $pdfContent = Storage::disk('local')->get($this->filePath);
+        //$pdfContent = Storage::disk('local')->get($this->filePath);
+        $pdfContent = file_get_contents($this->filePath);
         Mail::send(new GlucoseReportMail($pdfContent, $this->textPeriod, $this->email));
     }
 }
