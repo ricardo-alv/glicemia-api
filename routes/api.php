@@ -15,6 +15,10 @@ Route::get('/', function () {
     return 'Api Success';
  });
 
+ Route::get('/auth/test', function () {
+    return 'Api Success auth test';
+ });
+
 
 Route::middleware([
     'auth:sanctum',
