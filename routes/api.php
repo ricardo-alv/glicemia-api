@@ -11,7 +11,17 @@ use App\Http\Controllers\Api\{
 };
 use Illuminate\Support\Facades\Artisan;
 
-Route::post('/migrate', function () {
+use Illuminate\Http\Request;
+
+Route::post('/migrate', function (Request $request) {
+    $tokenRecebido = $request->header('X-MIGRATE-TOKEN');    
+
+    $tokenEsperado = env('MIGRATE_SECRET');
+
+    if ($tokenRecebido !== $tokenEsperado) {
+        return response()->json(['message' => 'Não autorizado.'], 401);
+    }
+
     try {
         Artisan::call('migrate', ['--force' => true]);
 
@@ -23,11 +33,12 @@ Route::post('/migrate', function () {
         return response()->json([
             'message' => 'Erro ao executar migrations.',
             'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(), // Adicionado!
-            'output' => Artisan::output(),     // Adicionado!
+            'trace' => $e->getTraceAsString(),
+            'output' => Artisan::output(),
         ], 500);
     }
 });
+
 
 
 Route::middleware([
