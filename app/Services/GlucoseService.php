@@ -44,7 +44,7 @@ class GlucoseService
 
         $startDate = $this->carbon->parse($data['period_start']);
         $endDate = $this->carbon->parse($data['period_final']);
-
+ 
         $pdfContent = [];
 
         while ($startDate->lte($endDate)) {
@@ -85,22 +85,16 @@ class GlucoseService
         $pdf = Pdf::loadHTML(implode($pdfContent))
             ->setPaper('a4', 'landscape');
 
-        $pdfBinary = $pdf->output();
-
-        // $filePath = 'reports/glucose_report/' . auth()->user()->id . '.pdf';
-        // Storage::disk('local')->put($filePath, $pdf->output());
+        $filePath = 'reports/glucose_report/' . auth()->user()->id . '.pdf';
+        Storage::disk('local')->put($filePath, $pdf->output());
 
         if (!empty($data['email'])) {
             $textPeriod = "Período de " . formatDateBr($data['period_start']) . " até " . formatDateBr($data['period_final']);
-           // GlucoseReportJob::dispatch($textPeriod, $filePath, auth()->user()->email);
+            GlucoseReportJob::dispatch($textPeriod, $filePath, auth()->user()->email);
             return response()->json(['message' => 'E-mail enviado com sucesso.']);
         }
 
-        return response($pdfBinary, 200)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="glucose_report.pdf"');
 
-
-        // return response()->file(storage_path('app/' . $filePath));
+        return response()->file(storage_path('app/' . $filePath));
     }
 }
