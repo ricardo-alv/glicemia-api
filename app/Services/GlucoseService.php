@@ -44,9 +44,7 @@ class GlucoseService
 
         $startDate = $this->carbon->parse($data['period_start']);
         $endDate = $this->carbon->parse($data['period_final']);
-
-        $logoBase64 = getBase64Image('https://glicemia-api.vercel.app/images/unicornio.png');
-
+  
         while ($startDate->lte($endDate)) {
             // Obtém o mês atual no formato 'Y-m'
             $currentMonth = $startDate->format('Y-m');
@@ -74,7 +72,7 @@ class GlucoseService
                 });
 
                 // Adiciona os dados do mês ao conteúdo do PDF
-                $pdfContent[] = view('pdf.glucose', compact('groupedGlucoses', 'currentMonthFormat','logoBase64'))->render();
+                $pdfContent[] = view('pdf.glucose', compact('groupedGlucoses', 'currentMonthFormat'))->render();
             }
 
             // Avançar para o próximo mês
