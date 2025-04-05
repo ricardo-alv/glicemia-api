@@ -92,7 +92,7 @@ class GlucoseService
 
         if (!empty($data['email'])) {
             $textPeriod = "Período de " . formatDateBr($data['period_start']) . " até " . formatDateBr($data['period_final']);
-            GlucoseReportJob::dispatch($textPeriod, $filePath, auth()->user()->email);
+           // GlucoseReportJob::dispatch($textPeriod, $filePath, auth()->user()->email);
             return response()->json(['message' => 'E-mail enviado com sucesso.']);
         }
 
