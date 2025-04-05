@@ -98,6 +98,7 @@ class GlucoseService
         }
 
 
-        return response()->file(storage_path('app/' . $filePath));
+        //return response()->file(storage_path('app/' . $filePath));
+        return response()->file($filePath);
     }
 }
