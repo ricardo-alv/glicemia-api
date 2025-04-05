@@ -11,6 +11,11 @@ use App\Http\Controllers\Api\{
 };
 
 
+Route::get('/', function () {
+    return 'Api Success';
+ });
+
+
 Route::middleware([
     'auth:sanctum',
 ])->group(function () {
