@@ -15,6 +15,11 @@ Route::get('/', function () {
     return 'Api Success';
  });
 
+ Route::get('/auth', function () {
+    return 'Api Success auth';
+ });
+
+
  Route::get('/auth/test', function () {
     return 'Api Success auth test';
  });
