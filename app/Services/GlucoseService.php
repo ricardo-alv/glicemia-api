@@ -97,7 +97,6 @@ class GlucoseService
             return response()->json(['message' => 'E-mail enviado com sucesso.']);
         }
 
-
         //return response()->file(storage_path('app/' . $filePath));
         return response()->file($filePath);
     }
