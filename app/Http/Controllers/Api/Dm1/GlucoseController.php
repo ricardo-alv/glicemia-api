@@ -10,6 +10,7 @@ use App\Services\GlucoseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class GlucoseController extends Controller
 {
@@ -43,6 +44,20 @@ class GlucoseController extends Controller
 
     public function export(Request $request)
     {
-        return $this->glucoseService->exportGlucose($request->all());
+        // return $this->glucoseService->exportGlucose($request->all());
+
+        try {
+            return $this->glucoseService->exportGlucose($request->all());
+        } catch (\Throwable $e) {
+            Log::error('Erro no controller export:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+    
+            return response()->json([
+                'message' => 'Erro inesperado ao exportar o relatório.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
