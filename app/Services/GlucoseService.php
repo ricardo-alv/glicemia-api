@@ -91,7 +91,8 @@ class GlucoseService
 
         // Gerar o PDF com todas as páginas
         $pdf = Pdf::loadHTML(implode($pdfContent))
-            ->setPaper('a4', 'landscape');
+            ->setPaper('a4', 'landscape')
+            ->setOption('isRemoteEnabled', true);
 
         $filePath = '/tmp/glucose_report_' . auth()->user()->id . '.pdf';
         file_put_contents($filePath, $pdf->output());
