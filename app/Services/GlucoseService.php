@@ -45,15 +45,7 @@ class GlucoseService
         $startDate = $this->carbon->parse($data['period_start']);
         $endDate = $this->carbon->parse($data['period_final']);
 
-        $pdfContent = [];
-        $logoBase64 = null;
-        $imagePath = public_path('images/unicornio.png');
-
-        if (file_exists($imagePath)) {
-            $imageType = pathinfo($imagePath, PATHINFO_EXTENSION);
-            $imageData = base64_encode(file_get_contents($imagePath));
-            $logoBase64 = "data:image/{$imageType};base64,{$imageData}";
-        }
+        $logoBase64 = getBase64Image('https://glicemia-api.vercel.app/images/unicornio.png');
 
         while ($startDate->lte($endDate)) {
             // Obtém o mês atual no formato 'Y-m'
