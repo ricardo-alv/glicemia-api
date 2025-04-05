@@ -9,6 +9,26 @@ use App\Http\Controllers\Api\{
     Dm1\GlucoseDayController,
     Dm1\MealTypeController,
 };
+use Illuminate\Support\Facades\Artisan;
+
+Route::post('/migrate', function () {
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+
+        return response()->json([
+            'message' => 'Migrations executadas com sucesso.',
+            'output' => Artisan::output()
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'message' => 'Erro ao executar migrations.',
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(), // Adicionado!
+            'output' => Artisan::output(),     // Adicionado!
+        ], 500);
+    }
+});
+
 
 Route::middleware([
     'auth:sanctum',
