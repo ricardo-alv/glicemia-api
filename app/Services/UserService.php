@@ -37,7 +37,7 @@ class UserService
 
         $user->code_created_at = now()->addHours(24)->format('Y-m-d H:i:s');
         $user->code = mt_rand(100000, 999999);
-        $user->save();   
+        $user->save();
 
         SendResetPasswordLinkJob::dispatch($user);
         return response()->json([], 204);
@@ -49,6 +49,8 @@ class UserService
         $user = User::where('email', $request->email)
             ->where('code', $request->code)
             ->first();
+
+            dd($user);
 
         if (!$user) {
             return back()->withErrors(['code' => 'Código inválido.']);
@@ -74,5 +76,10 @@ class UserService
         $user->save();
 
         return view('auth.password_reset_success');
+    }
+
+    public function passwordUpdateAuth(Request $request)
+    {
+        dd('entrou aqui api',$request->all());
     }
 }

@@ -30,6 +30,21 @@ class AuthController extends Controller
         return new UserResource($user);
     }
 
+    public function updatePasswordUser(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return response()->json([], 204);
+    }
+
     public function me(Request $request)
     {
         $user = $request->user();
@@ -43,5 +58,5 @@ class AuthController extends Controller
         $user->tokens()->delete();
 
         return response()->json([], 204);
-    }  
+    }
 }

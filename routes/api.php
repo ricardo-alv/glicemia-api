@@ -53,9 +53,10 @@ Route::middleware([
             Route::withoutMiddleware('auth:sanctum')->group(function () {
                 Route::post('/register', [RegisterController::class, 'store'])->name('register');
                 Route::post('/login', 'login')->name('login');
-                Route::post('/send-link-reset-password', [ResetPasswordController::class, 'sendLinkResetPassword'])->name('send.link');
-            });
+                Route::post('/send-link-reset-password', [ResetPasswordController::class, 'sendLinkResetPassword'])->name('send.link');              
+            });          
 
+            Route::post('/password-update-user', 'updatePasswordUser')->name('password.update');
             Route::get('/me', 'me')->name('me');
             Route::post('/logout', 'logout')->name('logout');
         });

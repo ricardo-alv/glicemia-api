@@ -23,13 +23,13 @@ class ResetPasswordController extends Controller
     }
 
     public function update(Request $request)
-    {
+    {        
         $request->validate([
             'email' => 'required|email|exists:users,email',
             'code' => 'required|digits:6',
             'password' => 'required|min:6|confirmed',
         ]);
-
+        
         return $this->userService->passwordUpdate($request);
     }
 }
