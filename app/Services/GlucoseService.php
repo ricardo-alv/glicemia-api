@@ -13,6 +13,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class GlucoseService
@@ -83,6 +84,9 @@ class GlucoseService
         if (empty($pdfContent)) {
             throw new \Exception('Não há dados para o período selecionado!');
         }
+
+        $html = implode($pdfContent);
+        Log::info('Tamanho do HTML gerado (em bytes): ' . strlen($html));
 
         // Gerar o PDF com todas as páginas
         $pdf = Pdf::loadHTML(implode($pdfContent))
