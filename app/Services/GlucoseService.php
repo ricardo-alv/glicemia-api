@@ -44,6 +44,7 @@ class GlucoseService
 
         $startDate = $this->carbon->parse($data['period_start']);
         $endDate = $this->carbon->parse($data['period_final']);
+        $pdfContent = [];
   
         while ($startDate->lte($endDate)) {
             // Obtém o mês atual no formato 'Y-m'
@@ -77,6 +78,10 @@ class GlucoseService
 
             // Avançar para o próximo mês
             $startDate->addMonth();
+        }
+
+        if (empty($pdfContent)) {
+            throw new \Exception('Não há dados para o período selecionado!');
         }
 
         // Gerar o PDF com todas as páginas
