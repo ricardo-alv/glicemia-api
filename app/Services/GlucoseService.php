@@ -46,14 +46,10 @@ class GlucoseService
         $startDate = $this->carbon->parse($data['period_start']);
         $endDate = $this->carbon->parse($data['period_final']);
 
-
-   
-        Log::info('Start Date: ' . $startDate);
-        Log::info('End Date: ' . $endDate);
-
         $pdfContent = [];
   
         while ($startDate->lte($endDate)) {
+            Log::info('Loop Mês: ' . $startDate->format('Y-m-d'));
             // Obtém o mês atual no formato 'Y-m'
             $currentMonth = $startDate->format('Y-m');
             $currentMonthFormat = $startDate->format('m/Y');
@@ -62,6 +58,8 @@ class GlucoseService
             $monthlyGlucoses = $glucoses->filter(function ($item) use ($startDate, $currentMonth) {
                 return $this->carbon->parse($item->date)->format('Y-m') === $currentMonth;
             });
+
+            Log::info("Qtd monthlyGlucoses para $currentMonth: " . $monthlyGlucoses->count());
 
             // Se houver dados para o mês, cria uma página no PDF
             if ($monthlyGlucoses->isNotEmpty()) {
