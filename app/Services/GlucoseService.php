@@ -45,10 +45,9 @@ class GlucoseService
 
         $startDate = $this->carbon->parse($data['period_start']);
         $endDate = $this->carbon->parse($data['period_final']);
+        $currentMonth = $startDate->copy()->startOfMonth();
 
         $pdfContent = [];
-
-        $currentMonth = $startDate->copy()->startOfMonth();
 
         while ($currentMonth->lte($endDate)) {
             $monthStr = $currentMonth->format('Y-m');
@@ -94,42 +93,6 @@ class GlucoseService
 
             $currentMonth->addMonthNoOverflow();
         }
-
-        // while ($startDate->lte($endDate)) {    
-        //     // Obtém o mês atual no formato 'Y-m'
-        //     $currentMonth = $startDate->format('Y-m');
-        //     $currentMonthFormat = $startDate->format('m/Y');
-
-        //     // Filtra os dados para o mês atual
-        //     $monthlyGlucoses = $glucoses->filter(function ($item) use ($startDate, $currentMonth) {
-        //         return $this->carbon->parse($item->date)->format('Y-m') === $currentMonth;
-        //     });
-
-        //     Log::info("Qtd monthlyGlucoses para $currentMonth: " . $monthlyGlucoses->count());
-
-        //     // Se houver dados para o mês, cria uma página no PDF
-        //     if ($monthlyGlucoses->isNotEmpty()) {
-        //         // Organize os dados do mês
-        //         $daysInMonth = range(1, 31);  // Pode ser ajustado conforme necessário
-
-        //         $groupedGlucoses = collect($daysInMonth)->mapWithKeys(function ($day) use ($monthlyGlucoses) {
-        //             $glucoseDay = $monthlyGlucoses->filter(function ($item) use ($day) {
-        //                 return $this->carbon->parse($item->date)->day == $day;
-        //             });
-
-        //             return [$day => [
-        //                 'basal' => $glucoseDay->first()->basal ?? '',
-        //                 'meals' => $glucoseDay->isNotEmpty() ? $glucoseDay->first()->glucoses->groupBy('mealType.name') : collect(),
-        //             ]];
-        //         });
-
-        //         // Adiciona os dados do mês ao conteúdo do PDF
-        //         $pdfContent[] = view('pdf.glucose', compact('groupedGlucoses', 'currentMonthFormat'))->render();
-        //     }
-
-        //     // Avançar para o próximo mês
-        //     $startDate->addMonthNoOverflow();
-        // }
 
         if (empty($pdfContent)) {
             throw new \Exception('Não há dados para o período selecionado!');
