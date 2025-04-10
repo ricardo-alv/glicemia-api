@@ -45,6 +45,12 @@ class GlucoseService
 
         $startDate = $this->carbon->parse($data['period_start']);
         $endDate = $this->carbon->parse($data['period_final']);
+
+
+   
+        Log::info('Start Date: ' . $startDate);
+        Log::info('End Date: ' . $endDate);
+
         $pdfContent = [];
   
         while ($startDate->lte($endDate)) {
