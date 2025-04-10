@@ -78,7 +78,7 @@ class GlucoseService
             }
 
             // Avançar para o próximo mês
-            $startDate->addMonth();
+            $startDate->addMonthNoOverflow();
         }
 
         if (empty($pdfContent)) {
