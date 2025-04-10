@@ -85,9 +85,10 @@ class GlucoseService
             throw new \Exception('Não há dados para o período selecionado!');
         }
 
-        $html = implode($pdfContent);
-        Log::info('quantidade: ' . count($pdfContent));
-        Log::info('Tamanho do HTML gerado (em bytes): ' . strlen($html));
+        Log::info('Timezone: ' . date_default_timezone_get());
+        Log::info('Start Date: ' . $startDate->toDateTimeString());
+        Log::info('End Date: ' . $endDate->toDateTimeString());
+        
 
         // Gerar o PDF com todas as páginas
         $pdf = Pdf::loadHTML(implode($pdfContent))
