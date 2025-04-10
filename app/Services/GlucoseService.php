@@ -47,22 +47,23 @@ class GlucoseService
         $endDate = $this->carbon->parse($data['period_final']);
 
         $pdfContent = [];
-        $currentDate = $startDate->copy();
+  
+        while ($startDate->lte($endDate)) {    
+            // Obtém o mês atual no formato 'Y-m'
+            $currentMonth = $startDate->format('Y-m');
+            $currentMonthFormat = $startDate->format('m/Y');
 
-        while ($currentDate->lte($endDate)) {
-            Log::info('Loop Mês: ' . $currentDate->format('Y-m-d'));
-
-            $currentMonth = $currentDate->format('Y-m');
-            $currentMonthFormat = $currentDate->format('m/Y');
-
-            $monthlyGlucoses = $glucoses->filter(function ($item) use ($currentDate, $currentMonth) {
+            // Filtra os dados para o mês atual
+            $monthlyGlucoses = $glucoses->filter(function ($item) use ($startDate, $currentMonth) {
                 return $this->carbon->parse($item->date)->format('Y-m') === $currentMonth;
             });
 
             Log::info("Qtd monthlyGlucoses para $currentMonth: " . $monthlyGlucoses->count());
 
+            // Se houver dados para o mês, cria uma página no PDF
             if ($monthlyGlucoses->isNotEmpty()) {
-                $daysInMonth = range(1, 31);
+                // Organize os dados do mês
+                $daysInMonth = range(1, 31);  // Pode ser ajustado conforme necessário
 
                 $groupedGlucoses = collect($daysInMonth)->mapWithKeys(function ($day) use ($monthlyGlucoses) {
                     $glucoseDay = $monthlyGlucoses->filter(function ($item) use ($day) {
@@ -75,58 +76,18 @@ class GlucoseService
                     ]];
                 });
 
+                // Adiciona os dados do mês ao conteúdo do PDF
                 $pdfContent[] = view('pdf.glucose', compact('groupedGlucoses', 'currentMonthFormat'))->render();
             }
 
-            $currentDate->addMonthNoOverflow();
+            // Avançar para o próximo mês
+            $startDate->addMonthNoOverflow();
         }
-
-        // while ($startDate->lte($endDate)) {
-        //     Log::info('Loop Mês: ' . $startDate->format('Y-m-d'));
-        //     // Obtém o mês atual no formato 'Y-m'
-        //     $currentMonth = $startDate->format('Y-m');
-        //     $currentMonthFormat = $startDate->format('m/Y');
-
-        //     // Filtra os dados para o mês atual
-        //     $monthlyGlucoses = $glucoses->filter(function ($item) use ($startDate, $currentMonth) {
-        //         return $this->carbon->parse($item->date)->format('Y-m') === $currentMonth;
-        //     });
-
-        //     Log::info("Qtd monthlyGlucoses para $currentMonth: " . $monthlyGlucoses->count());
-
-        //     // Se houver dados para o mês, cria uma página no PDF
-        //     if ($monthlyGlucoses->isNotEmpty()) {
-        //         // Organize os dados do mês
-        //         $daysInMonth = range(1, 31);  // Pode ser ajustado conforme necessário
-
-        //         $groupedGlucoses = collect($daysInMonth)->mapWithKeys(function ($day) use ($monthlyGlucoses) {
-        //             $glucoseDay = $monthlyGlucoses->filter(function ($item) use ($day) {
-        //                 return $this->carbon->parse($item->date)->day == $day;
-        //             });
-
-        //             return [$day => [
-        //                 'basal' => $glucoseDay->first()->basal ?? '',
-        //                 'meals' => $glucoseDay->isNotEmpty() ? $glucoseDay->first()->glucoses->groupBy('mealType.name') : collect(),
-        //             ]];
-        //         });
-
-        //         // Adiciona os dados do mês ao conteúdo do PDF
-        //         $pdfContent[] = view('pdf.glucose', compact('groupedGlucoses', 'currentMonthFormat'))->render();
-        //     }
-
-        //     // Avançar para o próximo mês
-        //     $startDate->addMonthNoOverflow();
-        // }
 
         if (empty($pdfContent)) {
             throw new \Exception('Não há dados para o período selecionado!');
         }
-
-        Log::info('Timezone: ' . date_default_timezone_get());
-        Log::info('Start Date: ' . $startDate->toDateTimeString());
-        Log::info('End Date: ' . $endDate->toDateTimeString());
-
-
+ 
         // Gerar o PDF com todas as páginas
         $pdf = Pdf::loadHTML(implode($pdfContent))
             ->setPaper('a4', 'landscape')
