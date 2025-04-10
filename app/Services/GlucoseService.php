@@ -29,9 +29,15 @@ class GlucoseService
         return $this->glucoseRepository->getAll($data);
     }
 
-    public function createUpdate(array $data): Glucose
+    public function createUpdate(array $data): array
     {
-        return $this->glucoseRepository->createUpdateGlucose($data);
+        $result = [];
+
+        foreach ($data as $item) {
+            $result[] = $this->glucoseRepository->createUpdateGlucose($item);
+        }
+
+        return $result;
     }
 
     public function delete(string | int $id): ?bool

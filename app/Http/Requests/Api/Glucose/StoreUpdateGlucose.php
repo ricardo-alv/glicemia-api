@@ -22,14 +22,14 @@ class StoreUpdateGlucose extends FormRequest
     public function rules(): array
     {
         return [
-            'glucose_days_id' => 'required',
-            'id' => 'string|nullable',
-            'meal_type_id' => 'required|string',
-            'before_glucose' => 'string|nullable',
-            'ultra_fast_insulin' => 'string|nullable',
-            'carbs' => 'string|nullable',
-            'after_glucose' => 'string|nullable',
-            'glucose_3morning' => 'string|nullable',
+            '*.glucose_days_id' => 'required|uuid|exists:glucose_days,id',
+            '*.id' => 'nullable|uuid|exists:glucoses,id',
+            '*.meal_type_id' => 'required|string|exists:meal_types,id',
+            '*.before_glucose' => 'nullable|string',
+            '*.ultra_fast_insulin' => 'nullable|string',
+            '*.carbs' => 'nullable|string',
+            '*.after_glucose' => 'nullable|string',
+            '*.glucose_3morning' => 'nullable|string',     
         ];
     }
 }

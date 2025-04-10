@@ -37,18 +37,23 @@ class GlucoseRepository implements GlucoseRepositoryInterface
         $data['glucose_days_id'] = $glucose_days_id;
 
         if (isset($data['id'])) {
-            $glucose = $this->entity->find($data['id']);    
+            $glucose = $this->entity->find($data['id']);
             $glucose->update($data);
-            $glucoses =  $glucose;
-        } else {     
-            if (!$existingRecord = $this->entity
-                ->where('glucose_days_id', $glucose_days_id)
-                ->where('meal_type_id', $data['meal_type_id'])
-                ->exists()) {
-                $glucoses =  $this->entity::create($data);
-            }
+            return $glucose;
         }
-        return $glucoses;
+
+        // Se for novo, checa se já existe
+        $existingRecord = $this->entity
+            ->where('glucose_days_id', $glucose_days_id)
+            ->where('meal_type_id', $data['meal_type_id'])
+            ->first();
+
+        if ($existingRecord) {
+            // já existe, retorna sem alterar
+            return $existingRecord;
+        }
+
+        return $this->entity::create($data);      
     }
 
     public function deleteGlucose(string | int $id): ?bool

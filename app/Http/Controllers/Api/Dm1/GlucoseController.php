@@ -29,9 +29,9 @@ class GlucoseController extends Controller
 
     public function store(StoreUpdateGlucose $request): JsonResource
     {
-        $glucose =  $this->glucoseService->createUpdate($request->validated());
-        return new GlucoseResource($glucose);
-    }   
+        $glucoses =  $this->glucoseService->createUpdate($request->validated());
+        return GlucoseResource::collection($glucoses);
+    }
 
     public function destroy(string | int $id): JsonResponse
     {
@@ -44,8 +44,6 @@ class GlucoseController extends Controller
 
     public function export(Request $request)
     {
-        // return $this->glucoseService->exportGlucose($request->all());
-
         try {
             return $this->glucoseService->exportGlucose($request->all());
         } catch (\Throwable $e) {
@@ -53,7 +51,7 @@ class GlucoseController extends Controller
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-    
+
             return response()->json([
                 'message' => 'Erro inesperado ao exportar o relatório.',
                 'error' => $e->getMessage(),
