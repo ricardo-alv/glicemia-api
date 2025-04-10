@@ -47,42 +47,89 @@ class GlucoseService
         $endDate = $this->carbon->parse($data['period_final']);
 
         $pdfContent = [];
-  
-        while ($startDate->lte($endDate)) {    
-            // Obtém o mês atual no formato 'Y-m'
-            $currentMonth = $startDate->format('Y-m');
-            $currentMonthFormat = $startDate->format('m/Y');
 
-            // Filtra os dados para o mês atual
-            $monthlyGlucoses = $glucoses->filter(function ($item) use ($startDate, $currentMonth) {
-                return $this->carbon->parse($item->date)->format('Y-m') === $currentMonth;
-            });
+        $currentMonth = $startDate->copy()->startOfMonth();
 
-            Log::info("Qtd monthlyGlucoses para $currentMonth: " . $monthlyGlucoses->count());
+while ($currentMonth->lte($endDate)) {
+    $monthStr = $currentMonth->format('Y-m');
+    $monthLabel = $currentMonth->format('m/Y');
 
-            // Se houver dados para o mês, cria uma página no PDF
-            if ($monthlyGlucoses->isNotEmpty()) {
-                // Organize os dados do mês
-                $daysInMonth = range(1, 31);  // Pode ser ajustado conforme necessário
+    // Filtrar os dados apenas do mês atual
+    $monthlyGlucoses = $glucoses->filter(function ($item) use ($monthStr) {
+        return $this->carbon->parse($item->date)->format('Y-m') === $monthStr;
+    });
 
-                $groupedGlucoses = collect($daysInMonth)->mapWithKeys(function ($day) use ($monthlyGlucoses) {
-                    $glucoseDay = $monthlyGlucoses->filter(function ($item) use ($day) {
-                        return $this->carbon->parse($item->date)->day == $day;
-                    });
+    if ($monthlyGlucoses->isNotEmpty()) {
+        // Dias do mês atual (1 a 31)
+        $daysInMonth = range(1, 31);
 
-                    return [$day => [
-                        'basal' => $glucoseDay->first()->basal ?? '',
-                        'meals' => $glucoseDay->isNotEmpty() ? $glucoseDay->first()->glucoses->groupBy('mealType.name') : collect(),
-                    ]];
-                });
+        $groupedGlucoses = collect($daysInMonth)->mapWithKeys(function ($day) use ($monthlyGlucoses, $currentMonth, $startDate, $endDate) {
+            // Monta a data completa do dia em loop
+            $date = $currentMonth->copy()->day($day);
 
-                // Adiciona os dados do mês ao conteúdo do PDF
-                $pdfContent[] = view('pdf.glucose', compact('groupedGlucoses', 'currentMonthFormat'))->render();
+            // Se a data for fora do intervalo real, retorna vazio
+            if ($date->lt($startDate) || $date->gt($endDate)) {
+                return [$day => [
+                    'basal' => '',
+                    'meals' => collect(),
+                ]];
             }
 
-            // Avançar para o próximo mês
-            $startDate->addMonthNoOverflow();
-        }
+            // Se estiver no range, monta normalmente
+            $glucoseDay = $monthlyGlucoses->first(function ($item) use ($date) {
+                return $this->carbon->parse($item->date)->isSameDay($date);
+            });
+
+            return [$day => [
+                'basal' => $glucoseDay->basal ?? '',
+                'meals' => $glucoseDay && isset($glucoseDay->glucoses)
+                    ? $glucoseDay->glucoses->groupBy('mealType.name')
+                    : collect(),
+            ]];
+        });
+
+        // Gera a view do mês
+        $pdfContent[] = view('pdf.glucose', compact('groupedGlucoses', 'monthLabel'))->render();
+    }
+
+    $currentMonth->addMonthNoOverflow();
+}
+  
+        // while ($startDate->lte($endDate)) {    
+        //     // Obtém o mês atual no formato 'Y-m'
+        //     $currentMonth = $startDate->format('Y-m');
+        //     $currentMonthFormat = $startDate->format('m/Y');
+
+        //     // Filtra os dados para o mês atual
+        //     $monthlyGlucoses = $glucoses->filter(function ($item) use ($startDate, $currentMonth) {
+        //         return $this->carbon->parse($item->date)->format('Y-m') === $currentMonth;
+        //     });
+
+        //     Log::info("Qtd monthlyGlucoses para $currentMonth: " . $monthlyGlucoses->count());
+
+        //     // Se houver dados para o mês, cria uma página no PDF
+        //     if ($monthlyGlucoses->isNotEmpty()) {
+        //         // Organize os dados do mês
+        //         $daysInMonth = range(1, 31);  // Pode ser ajustado conforme necessário
+
+        //         $groupedGlucoses = collect($daysInMonth)->mapWithKeys(function ($day) use ($monthlyGlucoses) {
+        //             $glucoseDay = $monthlyGlucoses->filter(function ($item) use ($day) {
+        //                 return $this->carbon->parse($item->date)->day == $day;
+        //             });
+
+        //             return [$day => [
+        //                 'basal' => $glucoseDay->first()->basal ?? '',
+        //                 'meals' => $glucoseDay->isNotEmpty() ? $glucoseDay->first()->glucoses->groupBy('mealType.name') : collect(),
+        //             ]];
+        //         });
+
+        //         // Adiciona os dados do mês ao conteúdo do PDF
+        //         $pdfContent[] = view('pdf.glucose', compact('groupedGlucoses', 'currentMonthFormat'))->render();
+        //     }
+
+        //     // Avançar para o próximo mês
+        //     $startDate->addMonthNoOverflow();
+        // }
 
         if (empty($pdfContent)) {
             throw new \Exception('Não há dados para o período selecionado!');
