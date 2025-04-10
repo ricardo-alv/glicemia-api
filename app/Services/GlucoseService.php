@@ -86,6 +86,7 @@ class GlucoseService
         }
 
         $html = implode($pdfContent);
+        Log::info('quantidade: ' . count($pdfContent));
         Log::info('Tamanho do HTML gerado (em bytes): ' . strlen($html));
 
         // Gerar o PDF com todas as páginas
