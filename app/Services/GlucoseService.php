@@ -50,51 +50,51 @@ class GlucoseService
 
         $currentMonth = $startDate->copy()->startOfMonth();
 
-while ($currentMonth->lte($endDate)) {
-    $monthStr = $currentMonth->format('Y-m');
-    $monthLabel = $currentMonth->format('m/Y');
+        while ($currentMonth->lte($endDate)) {
+            $monthStr = $currentMonth->format('Y-m');
+            $monthLabel = $currentMonth->format('m/Y');
 
-    // Filtrar os dados apenas do mês atual
-    $monthlyGlucoses = $glucoses->filter(function ($item) use ($monthStr) {
-        return $this->carbon->parse($item->date)->format('Y-m') === $monthStr;
-    });
-
-    if ($monthlyGlucoses->isNotEmpty()) {
-        // Dias do mês atual (1 a 31)
-        $daysInMonth = range(1, 31);
-
-        $groupedGlucoses = collect($daysInMonth)->mapWithKeys(function ($day) use ($monthlyGlucoses, $currentMonth, $startDate, $endDate) {
-            // Monta a data completa do dia em loop
-            $date = $currentMonth->copy()->day($day);
-
-            // Se a data for fora do intervalo real, retorna vazio
-            if ($date->lt($startDate) || $date->gt($endDate)) {
-                return [$day => [
-                    'basal' => '',
-                    'meals' => collect(),
-                ]];
-            }
-
-            // Se estiver no range, monta normalmente
-            $glucoseDay = $monthlyGlucoses->first(function ($item) use ($date) {
-                return $this->carbon->parse($item->date)->isSameDay($date);
+            // Filtrar os dados apenas do mês atual
+            $monthlyGlucoses = $glucoses->filter(function ($item) use ($monthStr) {
+                return $this->carbon->parse($item->date)->format('Y-m') === $monthStr;
             });
 
-            return [$day => [
-                'basal' => $glucoseDay->basal ?? '',
-                'meals' => $glucoseDay && isset($glucoseDay->glucoses)
-                    ? $glucoseDay->glucoses->groupBy('mealType.name')
-                    : collect(),
-            ]];
-        });
+            if ($monthlyGlucoses->isNotEmpty()) {
+                // Dias do mês atual (1 a 31)
+                $daysInMonth = range(1, 31);
 
-        // Gera a view do mês
-        $pdfContent[] = view('pdf.glucose', compact('groupedGlucoses', 'monthLabel'))->render();
-    }
+                $groupedGlucoses = collect($daysInMonth)->mapWithKeys(function ($day) use ($monthlyGlucoses, $currentMonth, $startDate, $endDate) {
+                    // Monta a data completa do dia em loop
+                    $date = $currentMonth->copy()->day($day);
 
-    $currentMonth->addMonthNoOverflow();
-}
-  
+                    // Se a data for fora do intervalo real, retorna vazio
+                    if ($date->lt($startDate) || $date->gt($endDate)) {
+                        return [$day => [
+                            'basal' => '',
+                            'meals' => collect(),
+                        ]];
+                    }
+
+                    // Se estiver no range, monta normalmente
+                    $glucoseDay = $monthlyGlucoses->first(function ($item) use ($date) {
+                        return $this->carbon->parse($item->date)->isSameDay($date);
+                    });
+
+                    return [$day => [
+                        'basal' => $glucoseDay->basal ?? '',
+                        'meals' => $glucoseDay && isset($glucoseDay->glucoses)
+                            ? $glucoseDay->glucoses->groupBy('mealType.name')
+                            : collect(),
+                    ]];
+                });
+
+                // Gera a view do mês
+                $pdfContent[] = view('pdf.glucose', compact('groupedGlucoses', 'monthLabel'))->render();
+            }
+
+            $currentMonth->addMonthNoOverflow();
+        }
+
         // while ($startDate->lte($endDate)) {    
         //     // Obtém o mês atual no formato 'Y-m'
         //     $currentMonth = $startDate->format('Y-m');
@@ -134,7 +134,7 @@ while ($currentMonth->lte($endDate)) {
         if (empty($pdfContent)) {
             throw new \Exception('Não há dados para o período selecionado!');
         }
- 
+
         // Gerar o PDF com todas as páginas
         $pdf = Pdf::loadHTML(implode($pdfContent))
             ->setPaper('a4', 'landscape')

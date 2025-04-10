@@ -69,7 +69,7 @@
     <div class="header"> 
         {{-- <img src="{{ public_path('images/unicornio.png') }}" class="logo" alt="logo" /> --}}      
         <strong style="font-size: 0.85rem">{{ config('app.name') }}</strong>
-        <div class="title">MÊS {{ $currentMonthFormat }}</div>
+        <div class="title">MÊS {{ $monthLabel }}</div>
     </div>
 
     <table>
