@@ -22,20 +22,20 @@ return new class extends Migration
             });
         }
 
-        // // Inserindo registros fixos
-        // $mealTypes = [
-        //     ['name' => 'Café da Manhã'],
-        //     ['name' => 'Almoço'],
-        //     ['name' => 'Colação'],
-        //     ['name' => 'Jantar'],
-        //     ['name' => 'Ceia'],
-        // ];
+        // Inserindo registros fixos
+        $mealTypes = [
+            ['name' => 'Café da Manhã'],
+            ['name' => 'Almoço'],
+            ['name' => 'Colação'],
+            ['name' => 'Jantar'],
+            ['name' => 'Ceia'],
+        ];
 
-        // foreach ($mealTypes as $mealType) {
-        //     MealType::firstOrCreate([
-        //         'name' => $mealType['name']
-        //     ]);
-        // }
+        foreach ($mealTypes as $mealType) {
+            MealType::firstOrCreate([
+                'name' => $mealType['name']
+            ]);
+        }
     }
 
     /**
