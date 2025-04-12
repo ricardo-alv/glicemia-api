@@ -14,9 +14,12 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Http\Request;
 
 Route::post('/artisan-command', function (Request $request) {
+
     // Verifica o token de segurança
     $tokenRecebido = $request->header('X-MIGRATE-TOKEN');
     $tokenEsperado = env('MIGRATE_SECRET');
+
+    $comando = $request->input('command');
 
     if ($tokenRecebido !== $tokenEsperado) {
         return response()->json(['message' => 'Não autorizado.'], 401);
@@ -24,7 +27,6 @@ Route::post('/artisan-command', function (Request $request) {
 
     // Valida o comando enviado na requisição
     $comando = $request->input('command');
-    $params = $request->input('params', []); // Parâmetros opcionais
 
     if (!$comando) {
         return response()->json(['message' => 'Comando não especificado.'], 400);
@@ -32,7 +34,7 @@ Route::post('/artisan-command', function (Request $request) {
 
     try {
         // Executa o comando Artisan com os parâmetros passados
-        Artisan::call($comando, $params);
+        Artisan::call($comando, ['--force' => true]);
 
         return response()->json([
             'message' => "{$comando} executado com sucesso.",
@@ -61,8 +63,8 @@ Route::middleware([
             Route::withoutMiddleware('auth:sanctum')->group(function () {
                 Route::post('/register', [RegisterController::class, 'store'])->name('register');
                 Route::post('/login', 'login')->name('login');
-                Route::post('/send-link-reset-password', [ResetPasswordController::class, 'sendLinkResetPassword'])->name('send.link');              
-            });          
+                Route::post('/send-link-reset-password', [ResetPasswordController::class, 'sendLinkResetPassword'])->name('send.link');
+            });
 
             Route::post('/password-update-user', 'updatePasswordUser')->name('password.update');
             Route::get('/me', 'me')->name('me');
