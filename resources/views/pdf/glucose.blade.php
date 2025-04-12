@@ -62,12 +62,20 @@
             font-size: 0.85rem;
             font-weight: bold
         }
+
+        .fixed-columns th,
+        .fixed-columns td {
+            width: 30px;
+            max-width: 30px;
+            min-width: 30px;
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
-    <div class="header"> 
-        {{-- <img src="{{ public_path('images/unicornio.png') }}" class="logo" alt="logo" /> --}}      
+    <div class="header">
+        {{-- <img src="{{ public_path('images/unicornio.png') }}" class="logo" alt="logo" /> --}}
         <strong style="font-size: 0.85rem">{{ config('app.name') }}</strong>
         <div class="title">MÊS {{ $monthLabel }}</div>
     </div>
@@ -83,50 +91,50 @@
                 <th colspan="4">JANTAR</th>
                 <th colspan="5">CEIA</th>
             </tr>
-            <tr>
+            <tr class="fixed-columns">
                 <th>Dia</th>
                 <th>Basal</th>
                 <th>Antes</th>
-                <th>Ultra Rápida</th>
+                <th>Rápida</th>
                 <th>CHO</th>
                 <th>2h Após</th>
                 <th>Antes</th>
-                <th>Ultra Rápida</th>
+                <th>Rápida</th>
                 <th>CHO</th>
                 <th>2h Após</th>
                 <th>Antes</th>
-                <th>Ultra Rápida</th>
+                <th>Rápida</th>
                 <th>CHO</th>
                 <th>2h Após</th>
                 <th>Antes</th>
-                <th>Ultra Rápida</th>
+                <th>Rápida</th>
                 <th>CHO</th>
                 <th>2h Após</th>
                 <th>Antes</th>
-                <th>Ultra Rápida</th>
+                <th>Rápida</th>
                 <th>CHO</th>
                 <th>2h Após</th>
                 <th>3h Manhã</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="fixed-columns">
             @foreach ($groupedGlucoses as $day => $data)
                 <tr>
                     <td>{{ str_pad($day, 2, '0', STR_PAD_LEFT) }}</td>
-                    <td>{{ $data['basal'] ?? '' }}</td>
+                    <td>{{ formatNumber($data['basal']) ?? '' }}</td>
 
                     @foreach (['Café da Manhã', 'Almoço', 'Colação', 'Jantar', 'Ceia'] as $type)
                         @php
                             $glucoseData = $data['meals']->get($type);
                         @endphp
 
-                        <td>{{ $glucoseData?->first()?->before_glucose ?? '' }}</td>
-                        <td>{{ $glucoseData?->first()?->ultra_fast_insulin ?? '' }}</td>
-                        <td>{{ $glucoseData?->first()?->carbs ?? '' }}</td>
-                        <td>{{ $glucoseData?->first()?->after_glucose ?? '' }}</td>
+                        <td>{{ formatNumber($glucoseData?->first()?->before_glucose) }}</td>
+                        <td>{{ formatNumber($glucoseData?->first()?->ultra_fast_insulin) }}</td>
+                        <td>{{ formatNumber($glucoseData?->first()?->carbs) }}</td>
+                        <td>{{ formatNumber($glucoseData?->first()?->after_glucose) }}</td>
 
                         @if ($type == 'Ceia')
-                            <td>{{ $glucoseData?->first()?->glucose_3morning ?? '' }}</td>
+                            <td>{{ formatNumber($glucoseData?->first()?->glucose_3morning) ?? '' }}</td>
                         @endif
                     @endforeach
                 </tr>

@@ -54,3 +54,23 @@ if (! function_exists('period_final')) {
         return $date ? Carbon::parse($date)->endOfDay() : '';
     }
 }
+
+if (! function_exists('formatNumber')) {   
+    function formatNumber($value): string {
+        if (is_null($value) || $value === '') {
+            return '';
+        }
+        
+        if (is_numeric($value)) {
+            // Se for inteiro, retorna como inteiro
+            if (floor($value) == $value) {
+                return number_format($value, 0, ',', '');
+            }
+
+            // Se tiver casas decimais, mostra 1
+            return number_format($value, 1, ',', '');
+        }
+
+        return $value;
+    }    
+}
