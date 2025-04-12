@@ -13,32 +13,40 @@ use Illuminate\Support\Facades\Artisan;
 
 use Illuminate\Http\Request;
 
-Route::post('/migrate', function (Request $request) {
+Route::post('/artisan-command', function (Request $request) {
+    // Verifica o token de segurança
     $tokenRecebido = $request->header('X-MIGRATE-TOKEN');
-
     $tokenEsperado = env('MIGRATE_SECRET');
 
     if ($tokenRecebido !== $tokenEsperado) {
         return response()->json(['message' => 'Não autorizado.'], 401);
     }
 
+    // Valida o comando enviado na requisição
+    $comando = $request->input('command');
+    $params = $request->input('params', []); // Parâmetros opcionais
+
+    if (!$comando) {
+        return response()->json(['message' => 'Comando não especificado.'], 400);
+    }
+
     try {
-        Artisan::call('migrate', ['--force' => true]);
+        // Executa o comando Artisan com os parâmetros passados
+        Artisan::call($comando, $params);
 
         return response()->json([
-            'message' => 'Migrations executadas com sucesso.',
+            'message' => "{$comando} executado com sucesso.",
             'output' => Artisan::output()
         ]);
     } catch (\Throwable $e) {
         return response()->json([
-            'message' => 'Erro ao executar migrations.',
+            'message' => 'Erro ao executar o comando.',
             'error' => $e->getMessage(),
             'trace' => $e->getTraceAsString(),
             'output' => Artisan::output(),
         ], 500);
     }
 });
-
 
 
 Route::middleware([
