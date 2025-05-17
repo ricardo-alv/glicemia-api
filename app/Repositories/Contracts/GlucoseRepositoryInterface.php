@@ -11,6 +11,8 @@ use Illuminate\Http\JsonResponse;
 interface GlucoseRepositoryInterface
 {
     public function getAll(array $data, bool $paginate = true): Collection| LengthAwarePaginator;
-    public function createUpdateGlucose(array $data): Glucose;
-    public function deleteGlucose(string | int $id): ?bool;
+    public function create(array $data): Glucose;
+    public function show(string | int $id): ?Glucose;
+    public function update(array $data, string | int $id): ?Glucose;
+    public function delete(string | int $id): ?bool;
 }

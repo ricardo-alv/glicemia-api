@@ -25,6 +25,11 @@ class GlucoseDayRepository implements GlucoseDayRepositoryInterface
         return $paginate ? $query->paginate(30) : $query->with('glucoses')->get();
     }
 
+    public function showGlucose(string | int $id): ?GlucoseDay
+    {
+        return $this->entity->find($id);
+    }
+
     public function createGlucose(array $data): GlucoseDay
     {
         return  $this->entity->create($data);
@@ -32,21 +37,14 @@ class GlucoseDayRepository implements GlucoseDayRepositoryInterface
 
     public function updateGlucose(array $data, string | int $id): ?GlucoseDay
     {
-        if (!$glucoseDay = $this->entity->find($id))  return null;
-
+        if (!$glucoseDay = $this->showGlucose($id))  return null;
         $glucoseDay->update($data);
         return $glucoseDay;
     }
 
-    public function showGlucose(string | int $id): ?GlucoseDay
-    {
-        return $this->entity->find($id);
-    }
-
     public function deleteGlucose(string | int $id): ?bool
     {
-        if (!$glucoseDay = $this->entity->find($id))  return null;
-
+        if (!$glucoseDay = $this->showGlucose($id))  return null;
         // Excluir (Glucose) relacionados
         $glucoseDay->glucoses()->delete();
         // Excluir o Glucose Day

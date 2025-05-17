@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Models\Glucose;
-use App\Models\GlucoseDay;
 use App\Jobs\GlucoseReportJob;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
@@ -29,20 +28,19 @@ class GlucoseService
         return $this->glucoseRepository->getAll($data);
     }
 
-    public function createUpdate(array $data): array
+    public function create(array $data): Glucose
     {
-        $result = [];
+        return $this->glucoseRepository->create($data);
+    }
 
-        foreach ($data as $item) {
-            $result[] = $this->glucoseRepository->createUpdateGlucose($item);
-        }
-
-        return $result;
+    public function update(array $data, string | int $id): ?Glucose
+    {
+        return $this->glucoseRepository->update($data, $id);
     }
 
     public function delete(string | int $id): ?bool
     {
-        return $this->glucoseRepository->deleteGlucose($id);
+        return $this->glucoseRepository->delete($id);
     }
 
     public function exportGlucose(array $data)

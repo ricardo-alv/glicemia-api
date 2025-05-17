@@ -29,8 +29,17 @@ class GlucoseController extends Controller
 
     public function store(StoreUpdateGlucose $request): JsonResource
     {
-        $glucoses =  $this->glucoseService->createUpdate($request->validated());
-        return GlucoseResource::collection($glucoses);
+        $glucose =  $this->glucoseService->create($request->validated());
+        return new GlucoseResource($glucose);
+    }
+
+    public function update(StoreUpdateGlucose $request, string $id): JsonResponse | JsonResource
+    {
+        if (!$glucose = $this->glucoseService->update($request->validated(), $id)) {
+            return response()->json(['msg' => 'Glicemia não encontrada!'], 404);
+        }
+
+        return new GlucoseResource($glucose);
     }
 
     public function destroy(string | int $id): JsonResponse

@@ -47,7 +47,7 @@ Route::middleware([
     /**Glucose */
     Route::prefix('v1')
         ->group(function () {
-            Route::resource('glucose', GlucoseController::class)->except(['create', 'edit', 'show', 'update']);
+            Route::resource('glucose', GlucoseController::class)->except(['create', 'edit', 'show']);
             Route::get('/glucose/export', [GlucoseController::class, 'export'])->name('export');
         });
 

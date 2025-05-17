@@ -29,35 +29,26 @@ class GlucoseRepository implements GlucoseRepositoryInterface
         return $glucoses;
     }
 
-    public function createUpdateGlucose(array $data): Glucose
+    public function show(string | int $id): ?Glucose
     {
-        $glucose_days_id = $data['glucose_days_id'];
-        unset($data['glucose_days_id']);
-
-        $data['glucose_days_id'] = $glucose_days_id;
-
-        if (isset($data['id'])) {
-            $glucose = $this->entity->find($data['id']);
-            $glucose->update($data);
-            return $glucose;
-        }
-
-        // Se for novo, checa se já existe
-        $existingRecord = $this->entity
-            ->where('glucose_days_id', $glucose_days_id)
-            ->where('meal_type_id', $data['meal_type_id'])
-            ->first();
-
-        if ($existingRecord) {
-            // já existe, retorna sem alterar
-            return $existingRecord;
-        }
-
-        return $this->entity::create($data);      
+        return $this->entity->find($id);
     }
 
-    public function deleteGlucose(string | int $id): ?bool
+    public function create(array $data): Glucose
     {
-        return $this->entity->where('glucose_days_id', $id)->delete();
+        return $this->entity::create($data);;
+    }
+
+    public function update(array $data, string | int $id): ?Glucose
+    {
+        if (!$glucose = $this->show($id))  return null;
+        $glucose->update($data);
+        return $glucose;
+    }
+
+    public function delete(string | int $id): ?bool
+    {
+        if (!$glucose = $this->show($id))  return null;
+        return $glucose->delete();
     }
 }
