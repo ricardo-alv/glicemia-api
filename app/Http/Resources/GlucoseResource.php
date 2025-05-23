@@ -24,6 +24,7 @@ class GlucoseResource extends JsonResource
             "glucose_3morning" => $this->glucose_3morning,
             "meal_type" => $this->mealType->name,
             "meal_type_id" =>  $this->mealType->id,
+            'created_at' => formatDateBr($this->created_at),
         ];
     }
 }

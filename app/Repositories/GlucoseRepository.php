@@ -24,6 +24,7 @@ class GlucoseRepository implements GlucoseRepositoryInterface
         $glucoses = $this->entity::query()
             ->with(['mealType', 'glucose_days'])
             ->where('glucose_days_id', $glucose_days_id)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return $glucoses;

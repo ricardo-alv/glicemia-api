@@ -28,6 +28,11 @@ class GlucoseService
         return $this->glucoseRepository->getAll($data);
     }
 
+    public function show(string | int $id): ?Glucose
+    {
+        return $this->glucoseRepository->show($id);
+    }
+
     public function create(array $data): Glucose
     {
         return $this->glucoseRepository->create($data);

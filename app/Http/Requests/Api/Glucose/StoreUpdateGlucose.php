@@ -32,4 +32,17 @@ class StoreUpdateGlucose extends FormRequest
             'glucose_3morning' => 'nullable|string',
         ];
     }
+
+    public function attributes(): array
+    {
+        return [
+            'meal_type_id' => 'refeição',
+            'glucose_days_id' => 'dia da glicemia',
+            'ultra_fast_insulin' => 'ultra rápida',
+            'before_glucose' => 'glicemia antes',
+            'carbs' => 'CHO',
+            'after_glucose' => 'glicemia após 2h',
+            'glucose_3morning' => 'glicemia às 3h da manhã',
+        ];
+    }
 }

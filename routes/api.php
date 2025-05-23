@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\{
     Dm1\GlucoseController,
     Dm1\GlucoseDayController,
     Dm1\MealTypeController,
+    Dm1\MealController
 };
 
 Route::middleware([
@@ -30,6 +31,12 @@ Route::middleware([
             Route::post('/logout', 'logout')->name('logout');
         });
 
+    /**MealType */
+    Route::prefix('v1')
+        ->group(function () {
+            Route::get('/meals', MealController::class);
+        });
+
 
     /**Glucose */
     Route::prefix('v1')
@@ -47,20 +54,7 @@ Route::middleware([
     /**Glucose */
     Route::prefix('v1')
         ->group(function () {
-            Route::resource('glucose', GlucoseController::class)->except(['create', 'edit', 'show']);
+            Route::resource('glucose', GlucoseController::class)->except(['create', 'edit']);
             Route::get('/glucose/export', [GlucoseController::class, 'export'])->name('export');
         });
-
-
-    // Route::controller(GlucoseController::class)
-    //     ->prefix('v1')
-    //     ->name('glucose.')
-    //     ->group(function () {
-    //         Route::get('/glucose/export', 'export')->name('export');
-    //         Route::get('/glucose', 'index')->name('index');
-    //         Route::get('/glucose/{id}', 'show')->name('show');
-    //         Route::post('/glucose',  'store')->name('store');
-    //         Route::put('/glucose/{id}', 'update')->name('update');
-    //         Route::delete('/glucose/{id}', 'destroy')->name('destroy');
-    //     });
 });
