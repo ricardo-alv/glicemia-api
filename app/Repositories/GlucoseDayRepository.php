@@ -22,7 +22,10 @@ class GlucoseDayRepository implements GlucoseDayRepositoryInterface
             $query->whereBetween('date', [$data['period_start'], $data['period_final']]);
         }
 
-        return $paginate ? $query->paginate(30) : $query->with('glucoses')->get();
+        return $paginate ? $query->paginate(30) :
+            $query->with(['glucoses' => function ($q) {
+                $q->where('report', 'yes');
+            }])->get();
     }
 
     public function showGlucose(string | int $id): ?GlucoseDay

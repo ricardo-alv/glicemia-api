@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('glucoses', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');  // Adiciona a chave estrangeira
-            $table->uuid('meal_type_id');
+            $table->uuid('meal_type_id')->nullable();
             $table->uuid('glucose_days_id');
             $table->string('description')->nullable();
             $table->integer('before_glucose')->nullable();
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->decimal('carbs', 5, 2)->nullable();
             $table->integer('after_glucose')->nullable();
             $table->integer('glucose_3morning')->nullable();
-
+            $table->enum('report', ['yes', 'no'])->default('no');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -22,9 +22,10 @@ class GlucoseResource extends JsonResource
             "carbs" => $this->carbs,
             "after_glucose" => $this->after_glucose,
             "glucose_3morning" => $this->glucose_3morning,
-            "meal_type" => $this->mealType->name,
-            "meal_type_id" =>  $this->mealType->id,
-            'created_at' => formatDateBr($this->created_at),
+            "meal_type" => $this->mealType ? $this->mealType->name : null,
+            "meal_type_id" => $this->mealType ? $this->mealType->id : null,
+            "report" => $this->report,
+            "created_at" => formatDateBr($this->created_at),
         ];
     }
 }

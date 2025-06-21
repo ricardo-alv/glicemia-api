@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Repositories\Contracts\GlucoseRepositoryInterface;
+use Illuminate\Validation\ValidationException;
 
 class GlucoseRepository implements GlucoseRepositoryInterface
 {
@@ -37,14 +38,45 @@ class GlucoseRepository implements GlucoseRepositoryInterface
 
     public function create(array $data): Glucose
     {
-        return $this->entity::create($data);;
+        $exists = $this->entity::where('meal_type_id', $data['meal_type_id'])
+            ->where('glucose_days_id', $data['glucose_days_id'])
+            ->where('report', 'yes')
+            ->exists();
+
+        if ($exists) {
+            throw ValidationException::withMessages([
+                'duplicate' => 'Essa refeição já foi registrada para este dia!',
+            ])->status(422);
+        }
+
+        return $this->entity::create($data);
     }
 
     public function update(array $data, string | int $id): ?Glucose
     {
         if (!$glucose = $this->show($id))  return null;
+
+        if (
+            isset($data['report']) && $data['report'] === 'yes' &&
+            isset($data['meal_type_id']) && isset($data['glucose_days_id'])
+        ) {
+            $exists = $this->entity::where('meal_type_id', $data['meal_type_id'])
+                ->where('glucose_days_id', $data['glucose_days_id'])
+                ->where('report', 'yes')
+                ->where('id', '!=', $id) // exclui o próprio registro da verificação
+                ->exists();
+
+            if ($exists) {
+                throw ValidationException::withMessages([
+                    'duplicate' => 'Essa refeição já foi registrada para este dia!',
+                ])->status(422);
+            }
+        }
+
         $glucose->update($data);
         return $glucose;
+        // $glucose->update($data);
+        // return $glucose;
     }
 
     public function delete(string | int $id): ?bool

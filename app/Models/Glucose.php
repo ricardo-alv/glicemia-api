@@ -12,7 +12,7 @@ class Glucose extends Model
 {
     use HasFactory, HasUuids, TenantTrait;
 
-    protected $fillable = ['user_id', 'meal_type_id', 'glucose_days_id', 'description', 'before_glucose', 'ultra_fast_insulin', 'carbs', 'after_glucose', 'glucose_3morning'];
+    protected $fillable = ['user_id', 'meal_type_id', 'glucose_days_id', 'description', 'before_glucose', 'ultra_fast_insulin', 'carbs', 'after_glucose', 'glucose_3morning', 'report'];
 
     public function user()
     {
