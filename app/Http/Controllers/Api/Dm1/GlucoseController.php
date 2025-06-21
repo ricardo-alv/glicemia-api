@@ -21,16 +21,32 @@ class GlucoseController extends Controller
     public function index(Request $request): JsonResource
     {
         $glucoses =  $this->glucoseService->getAll($request->all());
-        $meal_types = MealType::orderBy('created_at')->get();
-        return GlucoseResource::collection($glucoses)->additional([
-            'meal_types' => $meal_types
-        ]);
+        return GlucoseResource::collection($glucoses);
+    }
+
+
+    public function show(string | int $id): JsonResponse | JsonResource
+    {
+        if (!$glucose = $this->glucoseService->show($id)) {
+            return response()->json(['msg' => 'Glicemia não encontrada!'], 404);
+        }
+
+        return new GlucoseResource($glucose);
     }
 
     public function store(StoreUpdateGlucose $request): JsonResource
     {
-        $glucoses =  $this->glucoseService->createUpdate($request->validated());
-        return GlucoseResource::collection($glucoses);
+        $glucose =  $this->glucoseService->create($request->validated());
+        return new GlucoseResource($glucose);
+    }
+
+    public function update(StoreUpdateGlucose $request, string $id): JsonResponse | JsonResource
+    {
+        if (!$glucose = $this->glucoseService->update($request->validated(), $id)) {
+            return response()->json(['msg' => 'Glicemia não encontrada!'], 404);
+        }
+
+        return new GlucoseResource($glucose);
     }
 
     public function destroy(string | int $id): JsonResponse
