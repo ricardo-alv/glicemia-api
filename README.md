@@ -7,17 +7,15 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## SOBRE A API DO SISTEMA
-
-Api desenvolvida para registro e relatorio de glicemias mensais
+# Api desenvolvida para registro e relatorio de glicemias mensais
 
 ## Instalação
 
 Clone the repo locally:
 
 ```sh
-git clone https://github.com/ricardo-alv/gerenciamento-eventos-incricoes.git
-cd gerenciamento-eventos-incricoes
+git clone https://github.com/ricardo-alv/gerenciamento-eventos-incricoes.git](https://github.com/ricardo-alv/glicemia-api.git)
+cd glicemia-api
 ```
 
 Instalar PHP dependencias:
@@ -54,48 +52,8 @@ MAIL_USERNAME=null
 MAIL_PASSWORD=null
 MAIL_ENCRYPTION=null
 ```
-Caso nao tenha a migrate jobs rodar o comando
-
-```sh
-php artisan queue:table
-```
-Em seguida rode as migrations
-```sh
-php artisan migrate
-```
-Após executar as migrations rode o comando de seed para criar o Super Admin e as Roles
-```sh
-php artisan db:seed
-```
 Iniciar o servidor:
 ```sh
 php artisan serve
-```
-Executar o comando para executar as queues (envio de email):
-```sh
-php artisan queue:work
-```
-Login e senha do Super Admin:
-```sh
- email:super.admin@com.br
- password: 12345678
-```
-Para realizar os testes criar um banco de dados exclusivo para teste se necessário:
-
-Modificar a variável do env ou criar .env.testing:
-```sh
-APP_ENV=testing
-```
-Para executar todos os test:
-```sh
-php artisan test
-```
-Para executar um test especifico por nome da classe ou função:
-```sh
- php artisan test --filter test_name
-```
-Executar o comando se necessário antes de rodar os tests:
-```sh
-composer dumpautoload
 ```
 
