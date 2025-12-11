@@ -14,8 +14,14 @@
 Clone the repo locally:
 
 ```sh
-git clone https://github.com/ricardo-alv/gerenciamento-eventos-incricoes.git](https://github.com/ricardo-alv/glicemia-api.git)
+git clone https://github.com/ricardo-alv/glicemia-api.git
 cd glicemia-api
+```
+
+Docker:
+
+```sh
+docker-compose up -d
 ```
 
 Instalar PHP dependencias:
