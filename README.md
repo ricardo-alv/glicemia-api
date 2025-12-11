@@ -7,10 +7,9 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## SOBRE GERENCIA EVENTOS & INCRIÇÕES
+## SOBRE A API DO SISTEMA
 
-O sistema de Gerenciamento de Eventos e Inscrições permitirá que usuários autenticados criem e gerenciem eventos categorizados, incluindo funcionalidades para criação, edição e exclusão de eventos e categorias. Participantes poderão se inscrever em eventos, respeitando limites de capacidade e garantindo um controle eficiente das inscrições..
-
+Api desenvolvida para registro e relatorio de glicemias mensais
 
 ## Instalação
 
